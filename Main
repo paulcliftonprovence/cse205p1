@@ -1,0 +1,180 @@
+package p1;
+
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.io.File;
+import java.util.ArrayList;
+import java.io.PrintWriter;
+
+
+public class Main {
+	
+	public static void main (String[] args) throws FileNotFoundException {
+				
+		Main mainObject = new Main();
+		mainObject.run();
+		
+	}
+	
+	private void run() throws FileNotFoundException {
+		ArrayList<Integer> list = new ArrayList();
+		ArrayList<Integer> listRunsUpCount = new ArrayList();
+		ArrayList<Integer> listRunsDownCount = new ArrayList();
+		ArrayList<Integer> listRunsCount = new ArrayList();
+		int RUNS_UP = 1;
+		int RUNS_DOWN = -1;
+		int totalRuns = 0;
+		
+		try {
+			File inputFile = new File("C:\\Users\\paulc\\eclipse-workspace\\p1\\src\\p1\\p4-in.txt");
+			Scanner in = new Scanner(inputFile);
+			
+			try {
+			
+			while (in.hasNextInt()) {
+				list.add(in.nextInt());				
+			}
+			}
+			
+			finally {
+				in.close();
+			}
+								
+		}
+		
+		catch (FileNotFoundException pException)
+		{
+			
+			System.out.print("Sorry, we couldn't find that file!");
+			System.exit(-100);
+			return;
+		}
+		
+		listRunsUpCount = findRuns(list, RUNS_UP);
+		listRunsDownCount = findRuns(list, RUNS_DOWN);
+		listRunsCount = mergeLists(listRunsUpCount, listRunsDownCount);
+		totalRuns = sumCounts(listRunsCount);
+		
+		
+		try {
+
+			PrintWriter out = new PrintWriter("p4-runs.txt");
+			
+			try {
+			out.println("runs_total: " + totalRuns);
+			int r = 0;
+			for (; r < (listRunsCount.size()); r++) {
+				out.println("runs_" + (r+1) + ": " + listRunsCount.get(r));
+			}
+			}
+			
+			finally {
+				out.close();
+				}
+					
+		}
+	
+		catch (FileNotFoundException pException) {
+			System.out.print("Sorry, we couldn't write that file!");
+			System.exit(-200);
+		}
+		
+		}
+		
+			
+	private ArrayList<Integer> findRuns (ArrayList<Integer> pList, int pDir) {
+		ArrayList<Integer> listRunsCount1 = new ArrayList();
+		int i = 0;
+		int k = 0;
+		
+		for (int j = 0; j < pList.size(); j++) {
+			listRunsCount1.add(0);
+		}
+
+		while (i < pList.size()) {
+			if (pDir == 1) {
+				
+				if (i < pList.size()-1) {
+					if (pList.get(i) <= pList.get(i+1)) {
+						k++;
+					}
+				
+					if (pList.get(i) > pList.get(i+1)) {
+					if (k != 0) {
+						listRunsCount1.set((k-1),(listRunsCount1.get(k-1)+1));
+						
+					}
+					k = 0;
+			
+					}
+				}
+					
+				if(i == pList.size()-1) {
+					if (k != 0) {
+						listRunsCount1.set((k-1),(listRunsCount1.get(k-1)+1));
+						
+					}
+				
+				}	
+			}
+			
+			
+			if (pDir == -1){
+				
+			
+				if (i < pList.size()-1) {	
+				
+					if (pList.get(i) >= pList.get(i + 1)) {
+						k++;
+					} 
+				
+					if (pList.get(i) < pList.get(i+1)) {
+						if (k != 0) {
+							listRunsCount1.set((k-1),(listRunsCount1.get(k-1)+1));
+						}
+					k=0;
+					}
+				}
+					if (i == pList.size()-1) {
+						if (k != 0) {
+							listRunsCount1.set((k-1),(listRunsCount1.get(k-1)+1));						
+						}
+					}
+				
+			}
+		i++;
+				
+				
+		}
+					
+		return listRunsCount1;
+	}
+		
+		
+	private ArrayList<Integer> mergeLists(ArrayList<Integer> pListRunsUpCount, ArrayList<Integer> pListRunsDownCount) {
+		ArrayList<Integer> listRunsCount2 = new ArrayList();
+		
+		for (int j = 0; j < pListRunsUpCount.size(); j++) {
+			listRunsCount2.add(0);
+		}
+		
+		for (int l = 0; l < listRunsCount2.size(); l++) {
+			listRunsCount2.set(l, (pListRunsUpCount.get(l) + pListRunsDownCount.get(l)));
+					
+		}
+		return listRunsCount2;
+	}
+	
+	private int sumCounts(ArrayList<Integer> pListRunsFinal) {
+		int s = 0;
+		for (int m = 0; m < pListRunsFinal.size(); m++) {
+			s = s + pListRunsFinal.get(m);
+		}
+		
+		return s;
+		
+	}
+		
+}
+	
+
